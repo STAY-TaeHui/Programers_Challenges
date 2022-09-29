@@ -1,10 +1,11 @@
 package com.DevMatcing._2021_Matrix;
 
-import java.util.*;
-
 public class Solution {
+    int min;
+
     public int[] solution(int rows, int columns, int[][] queries) {
         //6,6, [[2,2,5,4],[3,3,6,6],[5,1,6,3]]
+        int[] answer = new int[queries.length];
 
         int [][] matrix = new int[rows][columns];
 
@@ -17,53 +18,53 @@ public class Solution {
         }
 
         for(int index =0; index<queries.length; index++){
-            int x1 = queries[index][0];
-            int y1 = queries[index][1];
-            int x2 = queries[index][2];
-            int y2 = queries[index][3];
-            int x=x1;
-            int y=y1;
+            min=rows*columns;
 
-            int [][] matrix_copy = matrix.clone();
+            int x1 = queries[index][0]-1;//2
+            int y1 = queries[index][1]-1;//2
+            int x2 = queries[index][2]-1;//5
+            int y2 = queries[index][3]-1;//4
 
+            int[][] matrix_copy = matrixCopy(rows, columns, matrix);
 
-            do{
-                if(y==y2){
-                    matrix[x][y+1] = matrix_copy[x][y];
-                    y++;
-                    continue;
-                }
-                if(x==x2){
-                    matrix[x+1][y] = matrix_copy[x][y];
-                    x++;
-                    continue;
-                }
-                if(y==y1){
-                    matrix[x][y-1] = matrix_copy[x][y];
-                    y--;
-                    continue;
-                }
-                if(x==x1){
-                    matrix[x-1][y] = matrix_copy[x][y];
-                    x--;
-                    continue;
-                }
-            }while(x==x1 && y==y1);
-//                for ()
-//                    for ()
-//                        for()
+            for(int tmpY = y1; tmpY<y2; tmpY++){
+                matrix[x1][tmpY+1] = matrix_copy[x1][tmpY];
+                checkMin(matrix_copy[x1][tmpY]);
+            }
+            for(int tmpX = x1; tmpX<x2; tmpX++){
+                matrix[tmpX+1][y2] = matrix_copy[tmpX][y2];
+                checkMin(matrix_copy[tmpX][y2]);
+            }
 
+            for(int tmpY = y2; tmpY>y1; tmpY--){
+                matrix[x2][tmpY-1] = matrix_copy[x2][tmpY];
+                checkMin(matrix_copy[x2][tmpY]);
+            }
+            for(int tmpX = x2; tmpX>x1; tmpX--){
+                matrix[tmpX-1][y1] = matrix_copy[tmpX][y1];
+                checkMin(matrix_copy[tmpX][y1]);
+            }
+            answer[index]=min;
         }
-
-
-        int[] answer = new int[queries.length];
 
 
         return answer;
     }
 
-    private void turnRight(int size, int[][] matrix, int[] answer)
+    private void checkMin(int value)
     {
+        if(min>value){
+            min=value;
+        }
+    }
 
+    private  int[][] matrixCopy(int rows, int columns, int[][] matrix)
+    {
+        int [][]matrix_copy = new int[rows][columns];
+
+        for(int i=0; i<rows; i++){
+            matrix_copy[i] = matrix[i].clone();
+        }
+        return matrix_copy;
     }
 }
